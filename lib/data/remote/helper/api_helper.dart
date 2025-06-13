@@ -1,0 +1,56 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:ecomm_352/data/remote/helper/app_exception.dart';
+import 'package:http/http.dart' as http;
+
+class ApiHelper {
+  getAPI() {}
+
+  Future<dynamic> postAPI({
+    required String url,
+    Map<String, dynamic>? params,
+    Map<String, String>? mHeaders,
+    bool isAuth = false,
+  }) async{
+    if (!isAuth) {
+      ///getting token from prefs
+      String token = "";
+      mHeaders!["Authorization"] = "Bearer $token";
+    }
+
+    try{
+      var res = await http.post(
+        Uri.parse(url),
+        body: params != null ? jsonEncode(params) : null,
+        headers: mHeaders,
+      );
+
+      return returnResponse(res);
+
+    } on SocketException catch (e){
+      throw NoInternetException(errorMessage: e.toString());
+    }
+  }
+
+  dynamic returnResponse(http.Response response){
+
+    switch(response.statusCode){
+      case 200:
+        var responseJson = jsonDecode(response.body);
+        return responseJson;
+      case 400:
+        throw BadRequestException(errorMessage: response.body);
+      case 401:
+      case 403:
+        throw UnauthorisedException(errorMessage: response.body);
+      case 500:
+      default:
+        throw FetchDataException(errorMessage: response.body);
+    }
+
+  }
+
+
+
+}
