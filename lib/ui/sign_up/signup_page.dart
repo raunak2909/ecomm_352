@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'package:ecomm_352/ui/sign_up/bloc/user_bloc.dart';
+import 'package:ecomm_352/ui/sign_up/bloc/user_event.dart';
+import 'package:ecomm_352/ui/sign_up/bloc/user_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
 class SignUpScreen extends StatefulWidget {
@@ -19,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen>
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-  TextEditingController();
+      TextEditingController();
   bool isLoading = false;
   String countryCode = "+1";
   late TabController _tabController;
@@ -217,12 +221,12 @@ class _SignUpScreenState extends State<SignUpScreen>
   }
 
   Widget _buildTextField(
-      String label,
-      TextEditingController? controller,
-      IconData icon,
-      bool isPassword,
-      FocusNode focusNode,
-      ) {
+    String label,
+    TextEditingController? controller,
+    IconData icon,
+    bool isPassword,
+    FocusNode focusNode,
+  ) {
     bool isFocused = focusNode.hasFocus;
     Color borderColor = isFocused ? const Color(0xffff650e) : Colors.black54;
     Color iconColor = isFocused ? const Color(0xffff650e) : Colors.black54;
@@ -243,16 +247,16 @@ class _SignUpScreenState extends State<SignUpScreen>
           prefixIcon: Icon(icon, color: iconColor),
           suffixIcon: isPassword
               ? GestureDetector(
-            onTap: () {
-              setState(() {
-                _isObscured = !_isObscured;
-              });
-            },
-            child: Icon(
-              _isObscured ? Icons.visibility_off : Icons.visibility,
-              color: iconColor,
-            ),
-          )
+                  onTap: () {
+                    setState(() {
+                      _isObscured = !_isObscured;
+                    });
+                  },
+                  child: Icon(
+                    _isObscured ? Icons.visibility_off : Icons.visibility,
+                    color: iconColor,
+                  ),
+                )
               : null,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -271,9 +275,6 @@ class _SignUpScreenState extends State<SignUpScreen>
     );
   }
 
-
-
-
   Widget _buildPhoneField(String label, FocusNode focusNode) {
     bool isFocused = focusNode.hasFocus;
     // Color borderColor = isFocused ? const Color(0xffff650e) : Colors.black54;
@@ -290,10 +291,7 @@ class _SignUpScreenState extends State<SignUpScreen>
           fontFamily: "Poppins",
           fontSize: 14,
         ),
-        prefixIcon: Icon(
-          Icons.phone,
-          color: iconColor,
-        ),
+        prefixIcon: Icon(Icons.phone, color: iconColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide(color: Colors.grey.shade300),
@@ -310,38 +308,84 @@ class _SignUpScreenState extends State<SignUpScreen>
     );
   }
 
-
   Widget _buildSignUpButton() {
     return SizedBox(
       width: double.infinity,
       height: 50,
 
-      child: ElevatedButton(
-        onPressed: () async{
-
-          if(_formKey.currentState!.validate()) {
-
-            /// request to sign up
-            
-
-
+      child: BlocListener<UserBloc, UserState>(
+        listener: (_, state) {
+          if (state is UserLoadingState) {
+            isLoading = true;
+            setState(() {});
           }
 
+          if (state is UserFailureState) {
+            isLoading = false;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage)),
+            );
+            setState(() {});
+          }
 
+          if (state is UserSuccessState) {
+            /// navigate back to login page
+            /// navigate to home page
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("User Registered Successfully")),
+            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    Scaffold(appBar: AppBar(title: Text('Home'))),
+              ),
+            );
+          }
         },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xffff650e),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+        child: ElevatedButton(
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              /// request to sign up
+              Map<String, dynamic> mParams = {
+                "name":
+                    "${_firstNameController.text} ${_lastNameController.text}",
+                "email": _emailController.text,
+                "mobile_number": _phoneController.text,
+                "password": _passwordController.text,
+              };
+              context.read<UserBloc>().add(SignUpEvent(bodyParams: mParams));
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xffff650e),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
           ),
-        ),
-        child: Text(
-          "Sign Up",
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Poppins",
-            color: Colors.white,
+          child: isLoading ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: Colors.white,),
+              SizedBox(width: 11,),
+              Text(
+                "Signing Up...",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Poppins",
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ) : Text(
+            "Sign Up",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Poppins",
+              color: Colors.white,
+            ),
           ),
         ),
       ),

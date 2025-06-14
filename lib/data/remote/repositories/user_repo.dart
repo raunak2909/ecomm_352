@@ -15,7 +15,7 @@ class UserRepo {
      );
      return res;
    } catch(e){
-     throw e;
+     rethrow;
    }
   }
 

@@ -26,6 +26,8 @@ class ApiHelper {
         headers: mHeaders,
       );
 
+      print(res.body);
+
       return returnResponse(res);
 
     } on SocketException catch (e){
