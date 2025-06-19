@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ecomm_352/ui/dashboard/home_page.dart';
 import 'package:ecomm_352/ui/sign_up/bloc/user_bloc.dart';
 import 'package:ecomm_352/ui/sign_up/bloc/user_event.dart';
 import 'package:ecomm_352/ui/sign_up/bloc/user_state.dart';
@@ -337,8 +338,7 @@ class _SignUpScreenState extends State<SignUpScreen>
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    Scaffold(appBar: AppBar(title: Text('Home'))),
+                builder: (context) => HomeScreen(),
               ),
             );
           }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:ecomm_352/data/remote/helper/app_exception.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiHelper {
   getAPI() {}
@@ -15,8 +16,10 @@ class ApiHelper {
   }) async{
     if (!isAuth) {
       ///getting token from prefs
-      String token = "";
-      mHeaders!["Authorization"] = "Bearer $token";
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
+      mHeaders ??= {};
+      mHeaders["Authorization"] = "Bearer $token";
     }
 
     try{
