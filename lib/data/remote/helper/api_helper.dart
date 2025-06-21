@@ -6,7 +6,35 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiHelper {
-  getAPI() {}
+  Future<dynamic> getAPI({
+    required String url,
+    Map<String, String>? mHeaders,
+    bool isAuth = false,
+  }) async{
+
+    if (!isAuth) {
+      ///getting token from prefs
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
+      mHeaders ??= {};
+      mHeaders["Authorization"] = "Bearer $token";
+    }
+
+    try{
+      var res = await http.get(
+        Uri.parse(url),
+        headers: mHeaders,
+      );
+
+      print(res.body);
+
+      return returnResponse(res);
+
+    } on SocketException catch (e){
+      throw NoInternetException(errorMessage: e.toString());
+    }
+
+  }
 
   Future<dynamic> postAPI({
     required String url,

@@ -103,6 +103,20 @@ class HomeScreen extends StatelessWidget {
             ),
             child: Icon(FontAwesomeIcons.bell, size: 22, color: Colors.black87),
           ),
+          InkWell(
+            onTap: (){
+              Navigator.pushNamed(context, AppRoutes.CARTPAGE);
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 15),
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey.shade200,
+              ),
+              child: Icon(FontAwesomeIcons.opencart, size: 22, color: Colors.black87),
+            ),
+          ),
         ],
         backgroundColor: Colors.white,
         elevation: 0,
@@ -278,7 +292,7 @@ class HomeScreen extends StatelessWidget {
             ),*/
           SizedBox(height: 20),
 
-          Container(
+          /*Container(
             height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -314,7 +328,7 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-          ),
+          ),*/
 
           SizedBox(height: 20),
 
@@ -522,12 +536,12 @@ class HomeScreen extends StatelessWidget {
                 Text(
                   "${product.name}",
                   style: TextStyle(
-                    fontSize: 14.5,
+                    fontSize: 13,
                     fontFamily: "Poppins",
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Row(
@@ -540,41 +554,34 @@ class HomeScreen extends StatelessWidget {
                         fontSize: 11.5,
                         fontFamily: "Poppins",
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: Colors.black45,
                       ),
                     ),
                     Spacer(),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: BouncingScrollPhysics(),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildColorDot(Colors.black),
-                            _buildColorDot(Colors.blue),
-                            _buildColorDot(Color(0xffff650e)),
-                            SizedBox(width: 2),
-                            Container(
-                              height: 14,
-                              width: 14,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                "+2",
-                                style: TextStyle(
-                                  fontSize: 8,
-                                  color: Colors.black,
-                                ),
-                              ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildColorDot(Colors.black),
+                        _buildColorDot(Colors.blue),
+                        _buildColorDot(Color(0xffff650e)),
+                        SizedBox(width: 2),
+                        Container(
+                          height: 14,
+                          width: 14,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            "+2",
+                            style: TextStyle(
+                              fontSize: 8,
+                              color: Colors.black,
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),

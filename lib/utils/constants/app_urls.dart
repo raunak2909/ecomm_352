@@ -6,5 +6,6 @@ class AppUrls{
   static const String registerUrl = "$baseUrl/ecommerce-api/user/registration";
   static const String productUrl = "$baseUrl/ecommerce-api/products";
   static const String addToCartUrl = "$baseUrl/ecommerce-api/add-to-cart";
+  static const String viewCartUrl = "$baseUrl/ecommerce-api/product/view-cart";
 
 }
